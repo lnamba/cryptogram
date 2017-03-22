@@ -1,8 +1,8 @@
 $(document).ready(function(){
   var quote = ""
   var author = "";
-  var alphabet = ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s",
-  "t", "u", "v", "w", "x", "y", "z"];
+  var alphabet = ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S",
+  "T", "U", "V", "W", "X", "Y", "Z"];
   var unalteredQuote;
   var alteredQuote = [];
   var indexed = [];
@@ -21,7 +21,7 @@ $(document).ready(function(){
   }
 
   $.getJSON("https://favqs.com/api/qotd", function(data){
-    quote = data.quote.body;
+    quote = data.quote.body.toUpperCase();
     author = data.quote.author;
     console.log("The quote is: " + quote);
     console.log("The author of this quote is: " + author);
@@ -29,7 +29,7 @@ $(document).ready(function(){
 
     unalteredQuote = quote.split("");
     unalteredQuote.map(function(i, index){
-      var indexOfLetter = alphabet.indexOf(i.toLowerCase());
+      var indexOfLetter = alphabet.indexOf(i);
       if (indexOfLetter > -1) {
         indexed.push(indexOfLetter);
 
@@ -57,12 +57,25 @@ $(document).ready(function(){
     alteredQuote.map(function(j, index){
       console.log(j);
       if (j) {
-        $("#quote").append(`<span id="letter${index+1}">${j}</span>`);
+        if ((j !== ".") &&
+            (j !== "!") &&
+            (j !== ",") &&
+            (j !== "'") &&
+            (j !== '"')) {
+          $("#quote").append(`<div class="box" id="box${index+1}"><div class="letter text-center" id="char${index+1}">${j}</div></div>`);
+          $(`#box${index+1}`).prepend(`<div id="guess${index+1}"></div>`);
+          // $(`guess${index+1}`).css({"border-bottom":"1px solid grey", "height":"60px", "width":"40px"})
+        } else {
+          $("#quote").append(`<div class="box" id="box${index+1}"><div class="punctuation text-center" id="char${index+1}">${j}</div></div>`);
+          $(`#char${index+1}`).css({"font-size":"2.5em", "padding":"0"});
+        }
       } else {
-        $("#quote").append(`<span id="letter${index+1}">${" "}</span>`);
+        $("#quote").append(`<div class="box space-box" id="box${index+1}"><div class="space" id="char${index+1}">${" "}</div></div>`);
       }
-      // $(`#letter${index+1}`).css({"font-size":"1.5em"})
+
     });
+
+
 
   });
 });
